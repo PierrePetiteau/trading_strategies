@@ -3,7 +3,6 @@ import { db } from "@/src/db";
 import { IKLineSchema } from "@/src/db/shemas";
 import { SSE } from "@/src/helpers/sse";
 import { Cursor } from "mongoose";
-import { isDayDifferent } from "@/src/helpers/date";
 import { PerpetualTrailingStrategy } from "@/src/helpers/strategies/perpetual_trailing/perpetual_trailing";
 import { IProfitAndLoss, IStrategyInput, ITick } from "@/src/helpers/strategies/types";
 
@@ -22,7 +21,7 @@ interface IResponseProcessing extends IResponseData {
 }
 
 // const DOCUMENT_LIMIT = 60 * 24 * 10;
-const DOCUMENT_LIMIT = 24 * 10;
+const DOCUMENT_LIMIT = 24 * 100;
 
 interface IReadStreamParams {
   stream: Cursor<any, any>;

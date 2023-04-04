@@ -18,16 +18,16 @@ import { IStrategyInput, IStrategySnapshot } from "../helpers/strategies/types";
 
 const defaultInput: IStrategyInput = {
   initial_portfolio: { tokenVolatile: { symbol: "ETH", amount: 0 }, tokenStable: { symbol: "USDT", amount: 1000 } },
-  buy_trailing: { percent: 0.0000001 },
-  sell_trailing: { percent: 0.0000001 },
-  fee: { percent: 0 },
+  buy_trailing: { percent: 0.0011 },
+  sell_trailing: { percent: 0.0011 },
+  fee: 0.001,
   period: { starting_date: 1640995200000 },
 };
 
 export default function PerpetualTrailing() {
   const [snapshots, setSnapshots] = useState<IStrategySnapshot[]>([]);
-  console.log('---------', 'snapshots.length', snapshots.length);
-  
+  console.log("---------", "snapshots.length", snapshots.length);
+
   const lastSnapshot = snapshots[snapshots.length - 1] ?? {};
   const isProcessingRef = useRef(false);
   const kLinesAmount = observable(0);

@@ -15,7 +15,7 @@ export interface IStrategyInput {
   initial_portfolio: IInitialPortfolio;
   buy_trailing: { percent: number } | { distance: number };
   sell_trailing: { percent: number } | { distance: number };
-  fee: { percent?: number; amount?: number };
+  fee: number;
   period: { starting_date: number; ending_date?: number };
 }
 
