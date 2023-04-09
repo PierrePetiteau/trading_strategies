@@ -3,8 +3,8 @@ import { db } from "@/src/db";
 import { IKLineSchema } from "@/src/db/shemas";
 import { SSE } from "@/src/helpers/sse";
 import { Cursor } from "mongoose";
-import { PerpetualTrailingStrategy } from "@/src/helpers/strategies/perpetual_trailing/perpetual_trailing";
 import { IProfitAndLoss, IStrategyInput, ITick } from "@/src/helpers/strategies/types";
+import { TrailingStrategy } from "@/src/helpers/strategies/trailing/trailing_strategy";
 
 interface IRequestInput {
   data: IStrategyInput;
@@ -19,18 +19,22 @@ interface IResponseData {
 interface IResponseProcessing extends IResponseData {
   progress_percentage: number;
 }
-
-// const DOCUMENT_LIMIT = 60 * 24 * 10;
-const DOCUMENT_LIMIT = 24 * 100;
+const MIN = 60000;
+const HOUR = 60 * MIN;
+const DAY = 24 * HOUR;
+const INTERVAL: number = MIN;
+const DOCUMENT_LIMIT = 10 * (DAY / INTERVAL);
 
 interface IReadStreamParams {
   stream: Cursor<any, any>;
   sse: SSE;
-  strategy: PerpetualTrailingStrategy;
+  strategy: TrailingStrategy;
 }
+
 async function processStrategyOnPricesHistoryStream({ stream, sse, strategy }: IReadStreamParams) {
   let snapshotIndex = 0;
   let klineIndex = 0;
+
   return new Promise<void>((resolve, reject) => {
     try {
       stream.on("data", (kline: IKLineSchema) => {
@@ -43,7 +47,7 @@ async function processStrategyOnPricesHistoryStream({ stream, sse, strategy }: I
           low_price: kline.low_price,
           close_price: kline.close_price,
         });
-        if (!(kline.open_time % 86400000)) {
+        if (!(kline.open_time % DAY)) {
           snapshotIndex++;
           console.log("---------", "snapshot emited", snapshotIndex);
           sse.write({ event: "processing", data: snapshot });
@@ -67,7 +71,7 @@ export default async function perpetualTrailingStrategyHandler(req: NextApiReque
   }
 
   const input = JSON.parse(req.query.input) as IStrategyInput;
-  const strategy = new PerpetualTrailingStrategy(input);
+  const strategy = new TrailingStrategy(input);
   const sse = new SSE(res);
 
   sse.init();
@@ -76,7 +80,7 @@ export default async function perpetualTrailingStrategyHandler(req: NextApiReque
     .find({
       open_time: {
         $gt: input.period.starting_date,
-        $mod: [3600000, 0],
+        $mod: [INTERVAL, 0],
       },
     })
     .limit(DOCUMENT_LIMIT)

@@ -1,5 +1,13 @@
 import { IPortfolio, IProfitAndLoss, IStrategyInput, IStrategySnapshot, ITick } from "../types";
 
+/**
+ * price event
+ *
+ * trigger stop if necessary and wait for the next hour
+ * or
+ * update stop
+ */
+
 interface ITrailingStop {
   price: number;
   stop: number;
@@ -26,6 +34,8 @@ interface ITradeUpdate {
   bound: number;
 }
 
+const HOUR = 60 * 60 * 1000;
+
 export class PerpetualTrailingStrategy {
   private status: "initial" | "processing" = "initial";
   private input: IStrategyInput;
@@ -34,6 +44,7 @@ export class PerpetualTrailingStrategy {
   private portfolio: { volatile: number; stable: number };
   private trades = 0;
   private fees = 0;
+  private ignoreUntil = 0;
   // tradesHistory: (ITrade | ITradePrepare | ITradeUpdate)[] = [];
 
   constructor(input: IStrategyInput) {
@@ -103,16 +114,18 @@ export class PerpetualTrailingStrategy {
   }
 
   private processTrailingBuy(tick: ITick) {
-    if (tick.high_price >= this.trailing!.stop) {
+    if (tick.open_price >= this.trailing!.stop) {
       // this.tradesHistory.push({
       //   time: tick.open_time,
       //   type: "buy",
       //   price: this.trailing!.stop,
       //   bound: this.trailing!.price,
       // });
-      this.buy(this.trailing!.stop);
-    } else if (tick.low_price <= this.trailing!.price) {
-      this.updateTrailingBuy(tick.low_price);
+      // this.buy(this. !.stop);
+      this.buy(tick.open_price);
+      // this.ignoreUntil = tick.open_time - (tick.open_time % HOUR) + HOUR;
+    } else if (tick.open_price <= this.trailing!.price) {
+      this.updateTrailingBuy(tick.open_price);
       // this.tradesHistory.push({
       //   time: tick.open_time,
       //   type: "update buy",
@@ -123,16 +136,18 @@ export class PerpetualTrailingStrategy {
   }
 
   private processTrailingSell(tick: ITick) {
-    if (tick.low_price <= this.trailing!.stop) {
+    if (tick.open_price <= this.trailing!.stop) {
       // this.tradesHistory.push({
       //   time: tick.open_time,
       //   type: "sell",
       //   price: this.trailing!.stop,
       //   bound: this.trailing!.price,
       // });
-      this.sell(this.trailing!.stop);
-    } else if (tick.high_price >= this.trailing!.price) {
-      this.updateTrailingSell(tick.high_price);
+      // this.sell(this.trailing!.stop);
+      this.sell(tick.open_price);
+      // this.ignoreUntil = tick.open_time - (tick.open_time % HOUR) + HOUR;
+    } else if (tick.open_price >= this.trailing!.price) {
+      this.updateTrailingSell(tick.open_price);
       // this.tradesHistory.push({
       //   time: tick.open_time,
       //   type: "update sell",
@@ -150,12 +165,12 @@ export class PerpetualTrailingStrategy {
   private getSnapshot(tick: ITick) {
     const control: IPortfolio = {
       ...this.control,
-      valueInUSD: this.control.volatile * tick.close_price,
+      valueInUSD: this.control.volatile * tick.open_price,
     };
 
     const portfolio: IPortfolio = {
       ...this.portfolio,
-      valueInUSD: this.portfolio.volatile ? this.portfolio.volatile * tick.close_price : this.portfolio.stable,
+      valueInUSD: this.portfolio.volatile ? this.portfolio.volatile * tick.open_price : this.portfolio.stable,
     };
 
     const pnl: IProfitAndLoss = {
@@ -234,6 +249,10 @@ export class PerpetualTrailingStrategy {
       this.status = "processing";
       this.processHolderStrategy(tick);
     }
+
+    // if (this.ignoreUntil > tick.open_time) {
+    //   return this.getSnapshot(tick);
+    // }
 
     if (!this.trailing) {
       this.prepareTrailing(tick);

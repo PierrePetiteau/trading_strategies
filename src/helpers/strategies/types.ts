@@ -13,8 +13,7 @@ export interface IInitialPortfolio {
 
 export interface IStrategyInput {
   initial_portfolio: IInitialPortfolio;
-  buy_trailing: { percent: number } | { distance: number };
-  sell_trailing: { percent: number } | { distance: number };
+  trailingPercent: number;
   fee: number;
   period: { starting_date: number; ending_date?: number };
 }
@@ -49,15 +48,15 @@ export interface IProfitAndLoss {
   fee: number;
 }
 
-export interface IStrategySnapshot {
-  timestamp: number;
-  price: number;
-  portfolio: IPortfolio;
-  control: IPortfolio; // holder
-  pnl: IProfitAndLoss;
-}
+// export interface IStrategySnapshot {
+//   timestamp: number;
+//   price: number;
+//   portfolio: IPortfolio;
+//   control: IPortfolio; // holder
+//   pnl: IProfitAndLoss;
+// }
 
-export interface IStrategyChunk {
-  snapshots: IStrategySnapshot[];
-  interval: number; // "1h" | "3h" | "6h" | "12h" | "24h";
-}
+// export interface IStrategyChunk {
+//   snapshots: IStrategySnapshot[];
+//   interval: number; // "1h" | "3h" | "6h" | "12h" | "24h";
+// }
