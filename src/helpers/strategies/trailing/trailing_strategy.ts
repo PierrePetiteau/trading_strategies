@@ -35,7 +35,6 @@ export class TrailingStrategy {
   private tradeAmount = 0;
 
   constructor(input: IStrategyInput) {
-    console.log('---------', 'input', input);
     this.trailingStopPercent = input.trailingPercent;
     this.swapFee = input.fee;
     this.control = {

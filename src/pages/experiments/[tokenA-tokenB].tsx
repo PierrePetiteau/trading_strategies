@@ -4,9 +4,9 @@ import { Computed } from "@legendapp/state/react";
 import { Card } from "react-daisyui";
 import { snapshots } from "@/src/client/snapshots";
 import { Chart } from "@/src/components/Chart/Chart";
-import TrailingStrategyForm, { IPair } from "@/src/components/TrailingStrategyForm";
-import TrailingStrategyOutput from "@/src/components/TrailingStrategyOutput";
 import { isString } from "@/src/helpers/types";
+import TrailingStrategyForm, { IPair } from "@/src/components/TrailingStrategyForm/TrailingStrategyForm";
+import TrailingStrategyOutput from "@/src/components/TrailingStrategyOutput/TrailingStrategyOutput";
 
 const availablePairs = ["ETH-USDT"];
 
