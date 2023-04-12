@@ -72,14 +72,14 @@ export const TrailingStrategyForm: FC<TrailingStrategyFormProps> = ({ pair }) =>
           <form onSubmit={handleSubmit}>
             <div className="form-control grid grid-flow-col grid-rows-6 sm:grid-rows-3 grid-cols-1 sm:grid-cols-2 gap-x-10">
               <TextInput id={"initial-usdt-amount"} label="Initial USDT amount" placeholder="0" defaultValue="1000" />
-              <TextInput id={"trailing-percentage"} label="Trailing percentage" placeholder="0%" defaultValue="0.1%" />
+              <TextInput id={"trailing-percentage"} label="Trailing percentage" placeholder="1.0%" defaultValue="1.0%" />
               <TextInput id={"fee-percentage"} label="Fee percentage" placeholder="0%" defaultValue="0.0%" />
               <TextInput
                 id={"starting-date"}
                 label="Starting date"
-                placeholder="01/01/2023 00:00"
-                defaultValue="01/01/2023 00:00"
-                defaultValueLabel="2023"
+                placeholder="01/01/2022 00:00"
+                defaultValue="01/01/2022 00:00"
+                defaultValueLabel="2022"
                 validate={(v) => {
                   const parsedDate = parse(v, "dd/MM/yyyy HH:mm", new Date());
                   const range = { min: 1577836800000, max: 1677628740000 };
@@ -98,7 +98,7 @@ export const TrailingStrategyForm: FC<TrailingStrategyFormProps> = ({ pair }) =>
                 id={"duration"}
                 label="Duration"
                 buttons={["30m", "1h", "3h", "6h", "24h"]}
-                defaultValue="30m"
+                defaultValue="24h"
               />
               <button type="submit" className="btn btn-primary self-end mt-4 mb-8">
                 Apply

@@ -57,19 +57,19 @@ export class TrailingStrategy {
     this.control.stable = 0;
   }
 
-  private buy() {
-    const exact = this.portfolio.stable / this.currentPrice;
+  private buy(price: number) {
+    const exact = this.portfolio.stable / price;
     const fee = exact * this.swapFee;
 
     this.portfolio.volatile = exact - fee;
     this.portfolio.stable = 0;
     this.inPosition = true;
-    this.fees += fee * this.currentPrice;
+    this.fees += fee * price;
     this.tradeAmount++;
   }
 
-  private sell() {
-    const exact = this.portfolio.volatile * this.currentPrice;
+  private sell(price: number) {
+    const exact = this.portfolio.volatile * price;
     const fee = exact * this.swapFee;
 
     this.portfolio.stable = exact - fee;
@@ -81,10 +81,10 @@ export class TrailingStrategy {
 
   private swap(trigger: ITrade["trigger"]): ITrade {
     if (this.inPosition) {
-      this.sell();
+      this.sell(trigger === "stop_loss" ? this.stopLossPrice : this.takeProfitPrice);
       return { type: "sell", trigger };
     } else {
-      this.buy();
+      this.buy(trigger === "stop_loss" ? this.stopLossPrice : this.takeProfitPrice);
       return { type: "buy", trigger };
     }
   }

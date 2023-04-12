@@ -32,18 +32,18 @@ const YEAR = 365 * DAY;
 function computeEmitInterval(input: IStrategyInput) {
   const endDate = input.period.ending_date ?? DEFAULT_ENDING_DATE;
   const duration = endDate - input.period.starting_date;
-
-  if (duration <= HOUR) {
-    return MIN;
-  } else if (duration <= 3 * HOUR) {
-    return 3 * MIN;
-  } else if (duration <= 6 * HOUR) {
-    return 6 * MIN;
-  } else if (duration <= 24 * HOUR) {
-    return 30 * MIN;
-  } else {
-    return HOUR;
-  }
+  return MIN;
+  // if (duration <= HOUR) {
+  //   return MIN;
+  // } else if (duration <= 3 * HOUR) {
+  //   return 3 * MIN;
+  // } else if (duration <= 6 * HOUR) {
+  //   return 6 * MIN;
+  // } else if (duration <= 24 * HOUR) {
+  //   return 30 * MIN;
+  // } else {
+  //   return HOUR;
+  // }
 }
 
 interface IReadStreamParams {
