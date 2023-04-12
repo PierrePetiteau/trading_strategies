@@ -18,12 +18,16 @@ const postStrategyTrailing = async ({ input }: IPostStrategyTrailingParams) => {
   const eventSource = new EventSource(buildEventSourceURL("/api/strategies/trailing", params));
 
   chart.modifiers.resetChart();
+  snapshotsState.lastSnapshot?.set(undefined);
 
   eventSource.addEventListener("processing", (event) => {
     const data = JSON.parse(event.data);
 
+    chart.modifiers.hydrateChart({
+      lastSnapshot: snapshotsState.lastSnapshot?.peek(),
+      currentSnapshot: data.snapshot,
+    });
     snapshotsState.lastSnapshot?.set(data.snapshot);
-    chart.modifiers.hydrateChart(data.snapshot);
   });
 
   eventSource.addEventListener("complete", (event) => {

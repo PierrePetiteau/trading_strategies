@@ -21,7 +21,8 @@ interface IResponseProcessing extends IResponseData {
 }
 
 const DEFAULT_ENDING_DATE = 1677628740000;
-const MIN = 60000;
+const SEC = 1000;
+const MIN = 60 * SEC;
 const HOUR = 60 * MIN;
 const DAY = 24 * HOUR;
 const WEEK = 7 * DAY;
@@ -32,16 +33,16 @@ function computeEmitInterval(input: IStrategyInput) {
   const endDate = input.period.ending_date ?? DEFAULT_ENDING_DATE;
   const duration = endDate - input.period.starting_date;
 
-  if (duration <= WEEK) {
-    return 12 * HOUR;
-  } else if (duration <= MONTH) {
-    return DAY;
-  } else if (duration <= 6 * MONTH) {
-    return 6 * DAY;
-  } else if (duration <= YEAR) {
-    return 2 * WEEK;
+  if (duration <= HOUR) {
+    return MIN;
+  } else if (duration <= 3 * HOUR) {
+    return 3 * MIN;
+  } else if (duration <= 6 * HOUR) {
+    return 6 * MIN;
+  } else if (duration <= 24 * HOUR) {
+    return 30 * MIN;
   } else {
-    return MONTH;
+    return HOUR;
   }
 }
 
@@ -67,8 +68,6 @@ async function processStrategyOnPricesHistoryStream({ stream, sse, strategy, inp
           close_price: kline.close_price,
         });
         if (!(kline.open_time % emitInterval)) {
-          console.log("---------", "snapshot", snapshot);
-
           sse.write({ event: "processing", data: { snapshot } });
           snapshot = undefined;
         }
@@ -103,7 +102,8 @@ export default async function perpetualTrailingStrategyHandler(req: NextApiReque
       },
     })
     .cursor({
-      timeout: 60000,
+      batchSize: 24 * 60,
+      timeout: 2 * 60000,
     });
   await processStrategyOnPricesHistoryStream({ stream, sse, strategy, input });
 

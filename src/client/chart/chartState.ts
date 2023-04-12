@@ -3,10 +3,12 @@ import { observable } from "@legendapp/state";
 export type Tick = {
   date: string;
   price: number;
-  takeProfit: number;
-  stopLoss: number;
-  in?: number;
-  out?: number;
+  buy?: number;
+  sell?: number;
+  buyTakeProfit?: number;
+  buyStopLoss?: number;
+  sellTakeProfit?: number;
+  sellStopLoss?: number;
   holder: number;
   trader: number;
   fees: number;

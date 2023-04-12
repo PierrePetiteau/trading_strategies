@@ -160,7 +160,7 @@ export class TrailingStrategy {
   }
 
   static debugSnapshot(snapshot: IStrategySnapshot) {
-    const message = `${format(snapshot.time, "dd/MM - hh:mm")}
+    const message = `${format(snapshot.time, "dd/MM - HH:mm")}
     \t${snapshot.trade ? `${snapshot.trade?.type} trigger by ${snapshot.trade?.trigger}` : ""}
 
     \tprice ${snapshot.price.toFixed(2)}

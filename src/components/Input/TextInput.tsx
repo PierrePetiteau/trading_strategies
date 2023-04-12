@@ -33,7 +33,7 @@ export const TextInput: FC<TextInputProps> = ({
   };
 
   return (
-    <Field name={id} validate={handleValidate}>
+    <Field name={id} validate={handleValidate} defaultValue={defaultValue}>
       {({ input, meta }) => (
         <div>
           <label className="label">

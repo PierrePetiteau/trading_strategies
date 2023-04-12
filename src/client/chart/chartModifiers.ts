@@ -6,18 +6,28 @@ const resetChart = () => {
   chartState.ticks.set([]);
 };
 
-const hydrateChart = (snapshot: IStrategySnapshot) => {
+interface IHydrateChartParams {
+  lastSnapshot?: IStrategySnapshot;
+  currentSnapshot: IStrategySnapshot;
+}
+const hydrateChart = ({ lastSnapshot, currentSnapshot }: IHydrateChartParams) => {
+  const { time, price, takeProfitPrice, stopLossPrice, position, control, portfolio, fees } = currentSnapshot;
+  const isBuy = lastSnapshot ? lastSnapshot.position === "out" && position === "in" : false;
+  const isSell = lastSnapshot ? lastSnapshot.position === "in" && position === "out" : false;
+
   const tick: Tick = {
-    date: format(snapshot.time, "dd/MM/yyyy"),
-    price: snapshot.price,
-    takeProfit: snapshot.takeProfitPrice,
-    stopLoss: snapshot.stopLossPrice,
-    in: snapshot.portfolio.stable ? 0 : 1,
-    out: snapshot.portfolio.stable ? 1 : 0,
-    holder: snapshot.control.valueInUSD,
-    trader: snapshot.portfolio.valueInUSD,
-    fees: snapshot.fees,
-    pnl: snapshot.portfolio.valueInUSD - snapshot.control.valueInUSD,
+    date: format(time, "HH:mm"),
+    price: price,
+    buy: isBuy ? price : undefined,
+    sell: isSell ? price : undefined,
+    buyTakeProfit: position === "out" ? parseFloat(takeProfitPrice.toFixed(2)) : undefined,
+    buyStopLoss: position === "out" ? parseFloat(stopLossPrice.toFixed(2)) : undefined,
+    sellTakeProfit: position === "in" ? parseFloat(takeProfitPrice.toFixed(2)) : undefined,
+    sellStopLoss: position === "in" ? parseFloat(stopLossPrice.toFixed(2)) : undefined,
+    holder: parseFloat(control.valueInUSD.toFixed(2)),
+    trader: parseFloat(portfolio.valueInUSD.toFixed(2)),
+    fees: fees,
+    pnl: portfolio.valueInUSD - control.valueInUSD,
   };
 
   chartState.ticks.set((ticks = []) => [...ticks, tick]);

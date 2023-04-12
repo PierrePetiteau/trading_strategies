@@ -5,9 +5,10 @@ type ButtonGroupInputProps = {
   id: string;
   label: string;
   buttons: string[];
+  defaultValue?: string;
 };
 
-export const ButtonGroupInput: FC<ButtonGroupInputProps> = ({ id, label, buttons }) => {
+export const ButtonGroupInput: FC<ButtonGroupInputProps> = ({ id, label, buttons, defaultValue }) => {
   const { meta } = useField(id);
 
   const required = (value: string) => (value ? undefined : "Required");
@@ -20,7 +21,14 @@ export const ButtonGroupInput: FC<ButtonGroupInputProps> = ({ id, label, buttons
       <div className="btn-group self-end flex w-full">
         {buttons.map((title) => {
           return (
-            <Field key={title} name={id} type="radio" value={title} validate={required}>
+            <Field
+              key={title}
+              name={id}
+              type="radio"
+              value={title}
+              validate={required}
+              defaultValue={defaultValue}
+            >
               {({ input }) => (
                 <input type="radio" data-title={title} className="btn btn-outline flex flex-grow" {...input} />
               )}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Menu } from "react-daisyui";
 import { navItems } from "@/src/components/Nav/constants";
 import { NavMenuHeader } from "@/src/components/Nav/components/NavMenu/NavMenuHeader";
+import { toogleCheckboxInput } from "@/src/client/html/input";
 
 type NavMenuProps = {};
 
@@ -22,7 +23,7 @@ export const NavMenu: FC<NavMenuProps> = ({}) => {
           } else if (item.type === "nav-link") {
             return (
               <li key={item.name}>
-                <Link href={item.path} className="rounded-lg">
+                <Link href={item.path} className="rounded-lg" onClick={() => toogleCheckboxInput("navigation-bar")}>
                   {item.name}
                 </Link>
               </li>

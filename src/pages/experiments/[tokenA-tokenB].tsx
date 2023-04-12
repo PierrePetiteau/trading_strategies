@@ -47,8 +47,8 @@ const PairPage = () => {
             const portfolioControlValue = lastSnapShot?.control.valueInUSD ?? 0;
             const portfolioValue = lastSnapShot?.portfolio.valueInUSD ?? 0;
             const output = {
-              startDate: currentInput ? format(currentInput.period.starting_date, "dd/MM/yyyy") : undefined,
-              endDate: lastSnapShot ? format(lastSnapShot.time, "dd/MM/yyyy") : undefined,
+              startDate: currentInput ? format(currentInput.period.starting_date, "dd/MM HH:mm") : undefined,
+              endDate: lastSnapShot ? format(lastSnapShot.time, "dd/MM HH:mm") : undefined,
               portfolioControlValue,
               portfolioValue,
               tradesAmount: lastSnapShot?.tradeAmount,
@@ -72,9 +72,28 @@ const PairPage = () => {
           }}
         </Computed>
       </Card>
-      <Card id={"chart-container"} className="m-[24px] p-[24px] bg-base-200">
-        <h2 className="mt-0">{pair}</h2>
-        <Chart />
+      <Card className="m-[24px] p-[24px] bg-base-200">
+        <h2 className="mt-0">{pair} performance</h2>
+        <Chart
+          lines={[
+            { dataKey: "holder", color: "#8884d8" },
+            { dataKey: "trader", color: "#82ca9d" },
+          ]}
+        />
+      </Card>
+      <Card className="m-[24px] p-[24px] bg-base-200">
+        <h2 className="mt-0">{pair} signals</h2>
+        <Chart
+          lines={[
+            { dataKey: "price", color: "hsl(var(--in))" },
+            { dataKey: "buyTakeProfit", color: "hsl(var(--su))" },
+            { dataKey: "buyStopLoss", color: "hsl(var(--er))" },
+            { dataKey: "sellTakeProfit", color: "hsl(var(--su))" },
+            { dataKey: "sellStopLoss", color: "hsl(var(--er))" },
+            { dataKey: "sell", color: "hsl(var(--wa))", dot: true },
+            { dataKey: "buy", color: "hsl(var(--wa))", dot: true },
+          ]}
+        />
       </Card>
     </div>
   );
