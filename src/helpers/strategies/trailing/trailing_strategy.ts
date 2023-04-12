@@ -35,17 +35,18 @@ export class TrailingStrategy {
   private tradeAmount = 0;
 
   constructor(input: IStrategyInput) {
+    console.log('---------', 'input', input);
     this.trailingStopPercent = input.trailingPercent;
     this.swapFee = input.fee;
     this.control = {
-      volatile: input.initial_portfolio.tokenVolatile.amount,
-      stable: input.initial_portfolio.tokenStable.amount,
+      volatile: 0,
+      stable: input.initial_amount,
     };
     this.portfolio = {
-      volatile: input.initial_portfolio.tokenVolatile.amount,
-      stable: input.initial_portfolio.tokenStable.amount,
+      volatile: 0,
+      stable: input.initial_amount,
     };
-    this.inPosition = Boolean(input.initial_portfolio.tokenVolatile.amount);
+    this.inPosition = Boolean(this.portfolio.volatile);
   }
 
   private hold() {

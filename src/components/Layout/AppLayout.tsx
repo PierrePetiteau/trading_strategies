@@ -24,7 +24,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       </Head>
       <div className="flex h-screen prose max-w-none">
         <Nav>
-          <main className="flex-grow max-h-screen overflow-y-auto">{children}</main>
+          <main id={"page-container"} className="flex-grow max-h-screen overflow-y-auto">{children}</main>
         </Nav>
       </div>
     </>

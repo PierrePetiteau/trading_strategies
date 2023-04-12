@@ -12,7 +12,7 @@ export interface IInitialPortfolio {
 }
 
 export interface IStrategyInput {
-  initial_portfolio: IInitialPortfolio;
+  initial_amount: number;
   trailingPercent: number;
   fee: number;
   period: { starting_date: number; ending_date?: number };

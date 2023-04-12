@@ -5,7 +5,7 @@ import { TrailingStrategy } from "./trailing_strategy";
 const STARTING_DATE = ticksSample[0].open_time;
 
 const defaultInput: IStrategyInput = {
-  initial_portfolio: { tokenVolatile: { symbol: "ETH", amount: 0 }, tokenStable: { symbol: "USDT", amount: 1000 } },
+  initial_amount: 1000,
   trailingPercent: 0.001,
   fee: 0.0001,
   period: { starting_date: STARTING_DATE },
