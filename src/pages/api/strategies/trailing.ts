@@ -67,8 +67,8 @@ async function processStrategyOnPricesHistoryStream({ stream, sse, strategy, inp
           close_price: kline.close_price,
         });
         if (!(kline.open_time % emitInterval)) {
-          console.log('---------', 'snapshot', snapshot);
-          
+          console.log("---------", "snapshot", snapshot);
+
           sse.write({ event: "processing", data: { snapshot } });
           snapshot = undefined;
         }
@@ -102,7 +102,9 @@ export default async function perpetualTrailingStrategyHandler(req: NextApiReque
         $lt: input.period.ending_date ?? DEFAULT_ENDING_DATE,
       },
     })
-    .cursor();
+    .cursor({
+      timeout: 60000,
+    });
   await processStrategyOnPricesHistoryStream({ stream, sse, strategy, input });
 
   stream.close();
