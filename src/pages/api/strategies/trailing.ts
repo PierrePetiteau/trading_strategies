@@ -67,6 +67,8 @@ async function processStrategyOnPricesHistoryStream({ stream, sse, strategy, inp
           close_price: kline.close_price,
         });
         if (!(kline.open_time % emitInterval)) {
+          console.log('---------', 'snapshot', snapshot);
+          
           sse.write({ event: "processing", data: { snapshot } });
           snapshot = undefined;
         }
